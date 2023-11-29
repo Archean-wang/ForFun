@@ -1,0 +1,53 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.control {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.snakeBackgound {
+    position: relative;
+    background-color: antiquewhite;
+    display: grid;
+}
+
+.snakeBlock {
+    width: 100%;
+    height: 100%;
+}
+
+.snakeHead {
+    background-color: cadetblue;
+}
+
+.snakeBody {
+    background-color: grey;
+}
+
+.end {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    background-color: black;
+    opacity: 0.5;
+}
+
+.food {
+    background-color: brown;
+    animation: infinite blink 1s;
+}
+
+@keyframes blink {
+    from {
+        background-color: brown;
+    }
+
+    to {
+        background: none;
+    }
+}
