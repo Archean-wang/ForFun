@@ -4,21 +4,51 @@
     align-items: center;
 }
 
+h1 {
+    color: chartreuse;
+}
+
+button {
+    outline: none;
+    height: 1.5rem;
+    border: 1px grey solid;
+    border-radius: 4px;
+    padding: 4px;
+    background-color: coral;
+    color: white;
+}
+
 .control {
     width: 100%;
     display: flex;
     justify-content: space-between;
+    margin: 8px 0 4px 0;
+}
+
+.speed {
+    font-size: 14px;
+    display: flex;
+    gap: 4px
+}
+
+.speed select {
+    outline: none;
+    border: 1px solid grey;
+    border-radius: 4px;
+    min-width: 48px;
 }
 
 .snakeBackgound {
     position: relative;
     background-color: antiquewhite;
     display: grid;
+    gap: 1px;
 }
 
 .snakeBlock {
     width: 100%;
     height: 100%;
+    background-color: chartreuse;
 }
 
 .snakeHead {
@@ -44,10 +74,10 @@
 
 @keyframes blink {
     from {
-        background-color: brown;
+        background-color: green;
     }
 
     to {
-        background: none;
+        background-color: red;
     }
 }

@@ -1,25 +1,86 @@
 import { useState, useEffect } from "react";
 import './snake.css';
+import { useMemo } from "react";
+import { divide } from "../../utils/math";
 
-function divide(n, m) {
-    const rem = n % m;
-    return [(n-rem) / m, rem];
-}
-
-export default function Snake({row=20, col=20}) {
+export default function Snake({row=40, col=40, cellSize=12}) {
     const [pause, setPause] = useState(true);
     const [speed, setSpeed] = useState(1);
     const [food, setFood] = useState(undefined);
     const [direction, setDirection] = useState(0);
-    const [path, setPath] = useState([row/2+col/2+1, row/2+col/2]);
+    const [path, setPath] = useState([row/2*col+col/2+1, row/2*col+col/2]);
     const [end, setEnd] = useState(false);
 
-    const handlePause = function () {
-        setPause(!pause);
+    const area = useMemo(() => Array(row*col).fill(1).map((_, index) => index), [row ,col]);
+
+    function handlePause() {
+        if(end) {
+            handleReset();
+            setPause(!pause);
+            feed();
+        } else {
+            setPause(!pause);
+            if(food === undefined)
+                feed();
+        }
     }
 
-    const handleSpeed = function(event) {
+    function handleSpeed(event) {
         setSpeed(event.target.value);
+    }
+
+    function move() {
+        const head = path[0];
+        const [_row, _col] = divide(head, col);
+        const nextPath = path.slice();
+        switch(direction) {
+            case 0:
+                if(_col === col-1) {
+                    setEnd(true);
+                    setPause(true);
+                }
+                nextPath.unshift(head+1);
+                break;
+            case 1:
+                if(_col === 0) {
+                    setEnd(true);
+                    setPause(true);
+                }
+                nextPath.unshift(head-1);
+                break;
+            case 2:
+                if(_row === 0) {
+                    setEnd(true);
+                    setPause(true);
+                }
+                nextPath.unshift(head-col);
+                break;
+            case 3:
+                if(_row === row-1) {
+                    setEnd(true);
+                    setPause(true);
+                }
+                nextPath.unshift(head+col);
+                break;
+            default:
+                throw Error('Invalid direction!');
+        }
+        if(nextPath[0] === food) {
+            feed();
+        } else {
+            nextPath.pop();
+            if (nextPath.slice(1, 500).indexOf(nextPath[0]) !== -1) {
+                setEnd(true);
+            }
+        }
+        setPath(nextPath);
+    }
+
+    function feed() {
+        const total = new Set(area);
+        path.forEach(v => total.delete(v));
+        const index = Math.floor(Math.random() * total.size);
+        setFood([...total][index]);
     }
 
     useEffect(() => {
@@ -28,58 +89,14 @@ export default function Snake({row=20, col=20}) {
             if(timer)
                 clearInterval(timer);
         } else {
-            setFood(food => food ? food : Math.floor(Math.random() * row * col));
-            timer = setInterval(() => {
-                setPath(path => {
-                    let head = path[0];
-                    const nextPath = path.slice();
-                    const [_row, _col] = divide(head, col);
-                    switch(direction) {
-                        case 0:
-                            if(_col === col-1) {
-                                setEnd(true);
-                            }
-                            nextPath.unshift(head+1);
-                            break;
-                        case 1:
-                            if(_col === 0) {
-                                setEnd(true);
-                            }
-                            nextPath.unshift(head-1);
-                            break;
-                        case 2:
-                            if(_row === 0) {
-                                setEnd(true);
-                            }
-                            nextPath.unshift(head-col);
-                            break;
-                        case 3:
-                            if(_row === row-1) {
-                                setEnd(true);
-                            }
-                            nextPath.unshift(head+col);
-                            break;
-                        default:
-                            throw Error('Invalid direction!');
-                    }
-                    if(nextPath[0] === food) {
-                        setFood(Math.floor(Math.random() * row * col));
-                    } else {
-                        nextPath.pop();
-                        if (nextPath.slice(1, 500).indexOf(nextPath[0]) !== -1) {
-                            setEnd(true);
-                        }
-                    }
-                    return nextPath;
-                })
-            }, speed*125);
+            timer = setInterval(move, speed*125);
         }
         return () => {
             if(timer) {
                 clearInterval(timer);
             } 
         }
-    }, [pause, speed, direction, food]);
+    }, [pause, speed, move]);
 
     useEffect(() => {
         function handleKey(event) {
@@ -100,27 +117,29 @@ export default function Snake({row=20, col=20}) {
                 default:
                     break;
             }
+            move();
         }
         window.addEventListener('keydown', handleKey);
         return () => {
             window.removeEventListener('keydown', handleKey);
         }
-    }, [pause])
+    }, [pause, move])
 
     useEffect(() => {
-        if(end)
-            setPause(true);
-    }, [end]);
+        const food = document.querySelector('.food')
+        if(food)
+            food.style.animationPlayState = pause ? 'paused' : 'running';
+    }, [pause])
 
     const getClass = function(index) {
         if(index === food) {
             return 'food'
         }
-        if(path.indexOf(index) === -1) {
-            return ''
-        }
         if(path[0] === index) {
             return 'snakeHead';
+        }
+        if(path.indexOf(index) === -1) {
+            return ''
         }
         return 'snakeBody';
     }
@@ -136,9 +155,9 @@ export default function Snake({row=20, col=20}) {
 
     return (
         <div className='container'>
+            <h1>GreedySnake</h1>
             <div className="control">
-                <button onClick={handlePause} disabled={end}>{pause ? 'Start' : 'Pause'}</button>
-                <button onClick={handleReset}>Reset</button>
+                <button onClick={handlePause}>{pause ? 'Start' : 'Pause'}</button>
                 <span className="speed">
                     <label>Speed</label>
                     <select onChange={handleSpeed}>
@@ -148,9 +167,9 @@ export default function Snake({row=20, col=20}) {
                     </select>
                 </span>
             </div>
-            <div className="snakeBackgound" style={{gridTemplateRows: `repeat(${row}, 16px)`, gridTemplateColumns: `repeat(${col}, 16px)`}}>
+            <div className="snakeBackgound" style={{gridTemplateRows: `repeat(${row}, ${cellSize}px)`, gridTemplateColumns: `repeat(${col},  ${cellSize}px)`}}>
             {
-                Array(row*col).fill(1).map((_, index) => {
+                area.map((_, index) => {
                     return <div key={index} className={`${getClass(index)} snakeBlock`}></div>
                 })
             }
