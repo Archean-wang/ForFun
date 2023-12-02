@@ -15,7 +15,7 @@ const router = createBrowserRouter([
     path: '/snake',
     element: <Snake />
   }
-]);
+], { basename: '/ForFun/' });
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
