@@ -4,6 +4,7 @@ import App from './App.jsx';
 import './index.css';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import Snake from './games/snake/index.jsx';
+import Color from './tools/color/index.jsx';
 
 const router = createBrowserRouter([
   {
@@ -14,6 +15,10 @@ const router = createBrowserRouter([
   {
     path: '/snake',
     element: <Snake />
+  },
+  {
+    path: '/color',
+    element: <Color />
   }
 ], { basename: '/ForFun/' });
 

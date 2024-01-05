@@ -8,16 +8,6 @@ h1 {
     color: #303827;
 }
 
-button {
-    outline: none;
-    height: 1.5rem;
-    border: 1px grey solid;
-    border-radius: 4px;
-    padding: 4px;
-    background-color: coral;
-    color: white;
-}
-
 .control {
     width: 100%;
     display: flex;

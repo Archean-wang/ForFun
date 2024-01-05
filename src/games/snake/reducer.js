@@ -44,11 +44,12 @@ export default function snakeReducer(snake, action) {
       return { ...snake, food: action.data };
     }
     case 'reset': {
+      const head = mod(snake.row, 2) * snake.col + Math.ceil(snake.col / 2);
       return {
         ...snake,
-        path: [mod(snake.row, 2) * snake.col + Math.ceil(snake.col / 2), mod(snake.row, 2) * snake.col + Math.ceil(snake.col / 2) - 1],
+        path: [head, head - 1],
         dead: false,
-        food: mod(snake.row, 2) * snake.col + Math.ceil(snake.col / 2)
+        food: head
       };
     }
   }

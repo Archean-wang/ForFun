@@ -1,0 +1,37 @@
+.container {
+  text-align: center;
+  height: 100%;
+}
+
+.container h1 {
+  margin: 40px 0;
+}
+
+.colorContainer {
+  display: flex;
+  padding: 16px;
+  min-width: 1080px;
+  gap: 20px;
+}
+
+.colorName {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.colorWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  width: 150px;
+  background: white;
+  border-radius: 4px;
+}
+
+.colorBlock {
+  display: inline-block;
+  height: 20px;
+  width: 20px;
+  border: solid 1px grey;
+}

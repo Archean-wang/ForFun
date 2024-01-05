@@ -4,6 +4,7 @@ export default function App() {
   return (
     <div>
       <Link to={'/snake'}>Snake</Link>
+      <Link to={'/color'}>Color</Link>
     </div>
-  )
+  );
 }
